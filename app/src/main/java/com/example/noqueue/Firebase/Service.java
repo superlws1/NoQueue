@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public class Service {
 
-    private int type;
-
     private double latitude;
     private double longitude;
 
@@ -28,7 +26,7 @@ public class Service {
     public Service() {}
 
 //    Quick-save the current provided items into the database, so it can be quick-loaded next time
-    public void saveItems(ArrayList<String> item, ArrayList<Double> price, int type) {
+    public void saveItems(ArrayList<String> item, ArrayList<Double> price) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference();
         String uid = firebaseUser.getUid();
@@ -36,7 +34,6 @@ public class Service {
         Map<String, Object> serviceData = new HashMap<>();
         serviceData.put("item", item);
         serviceData.put("price", price);
-        serviceData.put("type", type);
 
         Map<String, Object> putDB = new HashMap<>();
         putDB.put("users/" + uid + "/service/", serviceData);
@@ -49,14 +46,12 @@ public class Service {
         database = FirebaseDatabase.getInstance().getReference();
 
         Map<String, Object> putDB = new HashMap<>();
-        putDB.put("service/" + firebaseUser.getDisplayName() + "/type/", this.type);
         putDB.put("service/" + firebaseUser.getDisplayName() + "/latitude/", this.latitude);
         putDB.put("service/" + firebaseUser.getDisplayName() + "/longitude/", this.longitude);
 
-        if (this.type == 1) {
-            putDB.put("service/" + firebaseUser.getDisplayName() + "/item/", this.item);
-            putDB.put("service/" + firebaseUser.getDisplayName() + "/price/", this.price);
-        }
+        putDB.put("service/" + firebaseUser.getDisplayName() + "/item/", this.item);
+        putDB.put("service/" + firebaseUser.getDisplayName() + "/price/", this.price);
+
 
         database.updateChildren(putDB);
     }
@@ -70,15 +65,11 @@ public class Service {
     }
 
 //    Sends the order to the service provider from the user
-    public String orderService(String userName, String serviceName, String orderItem, int type){
+    public String orderService(String userName, String serviceName, String orderItem){
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference();
         Map<String, Object> putDB = new HashMap<>();
-        if (type == 1){
-            putDB.put("orderItem", orderItem);
-        }
-        else
-            putDB.put("name", userName);
+        putDB.put("orderItem", orderItem);
 
         String key = database.child("service").child(serviceName).child("queue").push().getKey();
 
@@ -92,14 +83,6 @@ public class Service {
         database = FirebaseDatabase.getInstance().getReference();
 
         database.child("service").child(firebaseUser.getDisplayName()).child("queue").child(userKey).removeValue();
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public ArrayList<String> getItem() {

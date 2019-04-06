@@ -36,7 +36,7 @@ public class User {
     }
 
 //    Add the user information (name) to the database
-    public void addNewUser(User user) {
+    public void addNewUser(User user, boolean provider) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference();
         String uid = firebaseUser.getUid();
@@ -45,7 +45,7 @@ public class User {
         putDB.put("users/" + uid + "/name", user.name);
         database.updateChildren(putDB);
 
-        updateProvider(false);
+        updateProvider(provider);
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(user.name).build();

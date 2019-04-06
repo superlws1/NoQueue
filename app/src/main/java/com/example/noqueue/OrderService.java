@@ -35,7 +35,6 @@ public class OrderService extends AppCompatActivity {
 
     TextView totalView;
     TextView priceView;
-    TextView totalItemView;
 
     ListView itemList;
     ArrayList<String> itemArray = new ArrayList<String>();
@@ -44,6 +43,8 @@ public class OrderService extends AppCompatActivity {
     Service service;
 
     int[] itemTotal;
+
+    String totalItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,6 @@ public class OrderService extends AppCompatActivity {
 
         totalView = findViewById(R.id.totalView);
         priceView = findViewById(R.id.priceView);
-        totalItemView = findViewById(R.id.totalItemView);
 
         itemList = findViewById(R.id.itemList);
         itemAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,itemArray);
@@ -79,21 +79,19 @@ public class OrderService extends AppCompatActivity {
                             itemArray = new ArrayList<String>();
                             service = dataSnapshot.getValue(Service.class);
 
-                            if (service.getType() == 1) {
-                                removeAllBtn.setVisibility(View.VISIBLE);
-                                totalView.setVisibility(View.VISIBLE);
-                                priceView.setVisibility(View.VISIBLE);
-                                totalItemView.setVisibility(View.VISIBLE);
-                                itemList.setVisibility(View.VISIBLE);
+                            removeAllBtn.setVisibility(View.VISIBLE);
+                            totalView.setVisibility(View.VISIBLE);
+                            priceView.setVisibility(View.VISIBLE);
+                            itemList.setVisibility(View.VISIBLE);
 
-                                for (int i = 0; i < service.getItem().size(); i++) {
-                                    itemArray.add(service.getItem().get(i) + " RM" + String.format("%.2f", service.getPrice().get(i)));
-                                }
-
-                                itemTotal = new int[service.getItem().size()];
-                                itemAdapter = new ArrayAdapter<>(OrderService.this,android.R.layout.simple_list_item_1,itemArray);
-                                itemList.setAdapter(itemAdapter);
+                            for (int i = 0; i < service.getItem().size(); i++) {
+                                itemArray.add(service.getItem().get(i) + " RM" + String.format("%.2f", service.getPrice().get(i)));
                             }
+
+                            itemTotal = new int[service.getItem().size()];
+                            itemAdapter = new ArrayAdapter<>(OrderService.this,android.R.layout.simple_list_item_1,itemArray);
+                            itemList.setAdapter(itemAdapter);
+
                         }
                         else {
                             Toast.makeText(OrderService.this,"Service closed",Toast.LENGTH_SHORT).show();
@@ -111,7 +109,7 @@ public class OrderService extends AppCompatActivity {
         itemList.setOnItemClickListener((parent, view, position, id) -> {
             itemTotal[position]++;
             double price = 0;
-            String totalItems = "";
+            totalItems = "";
             for (int i = 0; i < service.getItem().size(); i++) {
                 if (itemTotal[i] == 0)
                     continue;
@@ -119,7 +117,17 @@ public class OrderService extends AppCompatActivity {
                 price = price + service.getPrice().get(i)*itemTotal[i];
             }
 
-            totalItemView.setText(totalItems);
+            String toAdd;
+            if (itemTotal[position] > 1){
+                String[] split = itemArray.get(position).split(" ",2);
+                toAdd = split[1];
+            }
+            else {
+                toAdd = itemArray.get(position);
+            }
+            itemArray.add(position,String.valueOf(itemTotal[position]).concat("x ").concat(toAdd));
+            itemArray.remove(position + 1);
+            itemAdapter.notifyDataSetChanged();
             priceView.setText(String.format("RM %.2f",price));
         });
 
@@ -129,14 +137,19 @@ public class OrderService extends AppCompatActivity {
 
         removeAllBtn.setOnClickListener(v -> {
             itemTotal = new int[service.getItem().size()];
-            totalItemView.setText("");
             priceView.setText("RM 0.00");
+            for (int i = 0; i < itemArray.size(); i++){
+                String[] split = itemArray.get(i).split(" ",2);
+                itemArray.add(i,split[1]);
+                itemArray.remove(i + 1);
+                itemAdapter.notifyDataSetChanged();
+            }
         });
 
 //        Places the order to the service provider
         placeOrderBtn.setOnClickListener(v -> {
 
-            String key = service.orderService(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),serviceName,totalItemView.getText().toString(),service.getType());
+            String key = service.orderService(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),serviceName,totalItems);
 
             Intent intent = new Intent();
             intent.putExtra("key",key);

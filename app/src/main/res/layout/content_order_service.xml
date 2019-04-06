@@ -8,18 +8,6 @@
     tools:context=".OrderService"
     tools:showIn="@layout/activity_order_service">
 
-    <TextView
-        android:id="@+id/totalItemView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="230dp"
-        android:textSize="24sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemList" />
-
     <Button
         android:id="@+id/backBtn"
         android:layout_width="wrap_content"
@@ -44,22 +32,22 @@
         android:id="@+id/totalView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="37dp"
         android:text="Total:"
         android:visibility="invisible"
         app:layout_constraintBaseline_toBaselineOf="@+id/priceView"
-        app:layout_constraintStart_toEndOf="@+id/removeAllBtn" />
+        app:layout_constraintStart_toEndOf="@+id/textView10" />
 
     <TextView
         android:id="@+id/priceView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="37dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="26dp"
         android:text="RM 0.00"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/totalView" />
+        app:layout_constraintStart_toEndOf="@+id/totalView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/removeAllBtn"
@@ -67,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Remove All"
+        android:text="Clear"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -75,15 +63,23 @@
     <ListView
         android:id="@+id/itemList"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="490dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="18dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/totalItemView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginBottom="1dp"
+        android:text="Click to Add"
+        app:layout_constraintBottom_toTopOf="@+id/itemList"
+        app:layout_constraintStart_toEndOf="@+id/backBtn" />
 
 </android.support.constraint.ConstraintLayout>

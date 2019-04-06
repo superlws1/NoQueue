@@ -7,7 +7,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +30,12 @@ public class ManageService extends AppCompatActivity {
     Button stopBtn;
     Button nextCustBtn;
 
-    TextView itemView;
-
     Service service = new Service();
 
-    String customerKey;
+    ListView orderList;
+    ArrayList<String> orderArray = new ArrayList<String>();
+    ArrayAdapter<String> orderAdapter;
+    ArrayList<String> customerKey = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class ManageService extends AppCompatActivity {
         stopBtn = findViewById(R.id.stopBtn);
         nextCustBtn = findViewById(R.id.nextCustBtn);
 
-        itemView = findViewById(R.id.itemView);
+        orderList = findViewById(R.id.orderList);
 
 //        Shows the current customer's request on the queue
         FirebaseDatabase.getInstance()
@@ -57,26 +60,25 @@ public class ManageService extends AppCompatActivity {
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
+                            customerKey = new ArrayList<>();
+                            orderArray = new ArrayList<>();
                             for (DataSnapshot customer: dataSnapshot.getChildren()){
-                                customerKey = customer.getKey();
-                                String orderReq;
-                                if (customer.child("name").getValue(String.class) == null) {
-                                    orderReq = customer.child("orderItem").getValue(String.class);
-                                    itemView.setText(orderReq);
-                                }
-                                else {
-                                    orderReq = customer.child("name").getValue(String.class);
-                                    itemView.setText("Now serving: " + orderReq);
-                                }
+                                customerKey.add(customer.getKey());
+                                orderArray.add("Order ID: ".concat(customerKey.get(customerKey.size()-1)).concat(String.format("\n")).concat(customer.child("orderItem").getValue(String.class)));
 
-                                break;
                             }
                             stopBtn.setVisibility(View.INVISIBLE);
                             nextCustBtn.setVisibility(View.VISIBLE);
 
+                            orderAdapter = new ArrayAdapter<>(ManageService.this,android.R.layout.simple_list_item_1,orderArray);
+                            orderList.setAdapter(orderAdapter);
+
                         }
                         else {
-                            itemView.setText("No Orders Yet.");
+                            orderArray = new ArrayList<>();
+                            orderArray.add("Waiting for next customer.");
+                            orderAdapter = new ArrayAdapter<>(ManageService.this,android.R.layout.simple_list_item_1,orderArray);
+                            orderList.setAdapter(orderAdapter);
                             stopBtn.setVisibility(View.VISIBLE);
                             nextCustBtn.setVisibility(View.INVISIBLE);
                         }
@@ -92,8 +94,7 @@ public class ManageService extends AppCompatActivity {
         stopBtn.setOnClickListener(v -> {
             service.stopService();
 
-            setResult(10);
-            Intent intent = new Intent(this, MainMenu.class);
+            Intent intent = new Intent(this, ProviderSettings.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
@@ -101,7 +102,7 @@ public class ManageService extends AppCompatActivity {
 //        Removes the current customer and shows the next customer on the waiting list
         nextCustBtn.setOnClickListener(v -> {
             if (customerKey != null){
-                service.removeTopService(customerKey);
+                service.removeTopService(customerKey.get(0));
             }
         });
     }

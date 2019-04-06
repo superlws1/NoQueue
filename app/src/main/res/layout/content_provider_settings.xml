@@ -9,56 +9,21 @@
     tools:showIn="@layout/activity_provider_settings">
 
     <Button
-        android:id="@+id/cancelBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Cancel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
         android:id="@+id/providerSetupBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="38dp"
+        android:layout_marginTop="17dp"
         android:text="Set Up "
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Spinner
-        android:id="@+id/serviceDropdown"
-        android:layout_width="0dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="21dp"
-        android:spinnerMode="dropdown"
-        app:layout_constraintBottom_toTopOf="@+id/itemTxt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView6" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:text="Service"
-        app:layout_constraintStart_toStartOf="@+id/serviceDropdown"
-        app:layout_constraintTop_toBottomOf="@+id/cancelBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/priceList" />
 
     <ListView
         android:id="@+id/itemList"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="32dp"
-        android:visibility="invisible"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="19dp"
         app:layout_constraintBottom_toBottomOf="@+id/priceList"
         app:layout_constraintEnd_toStartOf="@+id/priceList"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,16 +32,13 @@
     <ListView
         android:id="@+id/priceList"
         android:layout_width="0dp"
-        android:layout_height="269dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="106dp"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="104dp"
-        android:visibility="invisible"
+        android:layout_height="0dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginBottom="103dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemList"
-        app:layout_constraintTop_toTopOf="@+id/addItemBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/addItemBtn" />
 
     <Button
         android:id="@+id/saveBtn"
@@ -85,7 +47,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="38dp"
         android:text="Save Items"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -104,11 +65,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginBottom="37dp"
         android:ems="10"
         android:hint="Item"
         android:inputType="textPersonName"
-        android:visibility="invisible"
-        app:layout_constraintBaseline_toBaselineOf="@+id/clearBtn"
+        app:layout_constraintBottom_toTopOf="@+id/priceTxt"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -116,50 +77,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="13dp"
         android:ems="10"
         android:hint="Price"
         android:inputType="numberSigned|numberDecimal"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/itemList"
+        app:layout_constraintBottom_toTopOf="@+id/priceList"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/addItemBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginBottom="20dp"
         android:text="Add Item"
-        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/deleteItemBtn"
-        app:layout_constraintEnd_toEndOf="@+id/deleteItemBtn" />
+        app:layout_constraintStart_toStartOf="@+id/deleteItemBtn" />
 
     <Button
         android:id="@+id/deleteItemBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="234dp"
-        android:layout_marginEnd="6dp"
+        android:layout_marginTop="199dp"
+        android:layout_marginEnd="16dp"
         android:text="Delete Item"
-        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/clearBtn"
+        android:id="@+id/backBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/deleteItemBtn"
-        app:layout_constraintStart_toEndOf="@+id/itemTxt" />
-
-    <TextView
-        android:id="@+id/messageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="@+id/deleteItemBtn"
-        app:layout_constraintTop_toBottomOf="@+id/priceList" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

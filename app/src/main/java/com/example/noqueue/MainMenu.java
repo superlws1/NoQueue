@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.noqueue.Firebase.Service;
 import com.example.noqueue.Firebase.User;
@@ -43,6 +44,8 @@ public class MainMenu extends AppCompatActivity {
     Intent logoutIntent;
     Intent serviceSetupIntent;
 
+    TextView shopView;
+
     FirebaseAuth firebaseAuth;
 
     User user;
@@ -59,6 +62,8 @@ public class MainMenu extends AppCompatActivity {
         serviceSetupBtn = findViewById(R.id.setupServiceBtn);
         accountBtn = findViewById(R.id.accountBtn);
         waitingListBtn = findViewById(R.id.waitingListBtn);
+
+        shopView = findViewById(R.id.shopView);
 
         listService = findViewById(R.id.listService);
         adapterService = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayService);
@@ -89,12 +94,14 @@ public class MainMenu extends AppCompatActivity {
                         user = dataSnapshot.getValue(User.class);
 
                         if (user.isProvider()) {
-                            serviceSetupBtn.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(MainMenu.this, ManageService.class);
-                            startActivityForResult(intent,5);
+                            serviceSetupBtn.setVisibility(View.VISIBLE);
+                            shopView.setVisibility(View.INVISIBLE);
+                            listService.setVisibility(View.INVISIBLE);
                         }
                         else {
-                            serviceSetupBtn.setVisibility(View.VISIBLE);
+                            serviceSetupBtn.setVisibility(View.INVISIBLE);
+                            shopView.setVisibility(View.VISIBLE);
+                            listService.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -169,23 +176,15 @@ public class MainMenu extends AppCompatActivity {
 
 //        List of service under waiting list
         waitingListBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, Queue.class);
-            startActivity(intent);
-        });
-
-//        Gets the permission to access GPS
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.INTERNET},
-                            10);
-
+            if (!user.isProvider()) {
+                Intent intent = new Intent(this, Queue.class);
+                startActivity(intent);
             }
-        }
+            else {
+                Intent intent = new Intent(MainMenu.this, ManageService.class);
+                startActivity(intent);
+            }
+        });
 
         Intent gpsService = new Intent(this, LocationService.class);
         startService(gpsService);
@@ -193,7 +192,6 @@ public class MainMenu extends AppCompatActivity {
     }
 
     public void logout() {
-        user.updateProvider(false);
         Intent gpsService = new Intent(this, LocationService.class);
         stopService(gpsService);
         service = new Service();
@@ -207,7 +205,6 @@ public class MainMenu extends AppCompatActivity {
         super.onDestroy();
         Intent gpsService = new Intent(this, LocationService.class);
         stopService(gpsService);
-        user.updateProvider(false);
         service = new Service();
         service.stopService();
     }
@@ -216,12 +213,8 @@ public class MainMenu extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 5){
             if (resultCode == 5){
-                user.updateProvider(true);
                 Intent intent = new Intent(this, ManageService.class);
-                startActivityForResult(intent,5);
-            }
-            if (resultCode == 10){
-                user.updateProvider(false);
+                startActivity(intent);
             }
         }
 

@@ -46,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/shopView" />
 
     <Button
         android:id="@+id/waitingListBtn"
@@ -59,13 +59,13 @@
         app:layout_constraintTop_toBottomOf="@+id/listService" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/shopView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="115dp"
         android:layout_marginBottom="18dp"
-        android:text="Nearby Service"
+        android:text="Shop"
         app:layout_constraintBottom_toTopOf="@+id/listService"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

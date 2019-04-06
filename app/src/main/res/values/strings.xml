@@ -6,10 +6,6 @@
     <string name="title_activity_main_menu">MainMenu</string>
     <string name="title_activity_nearby_service">OrderService</string>
 
-    <string-array name="service_type">
-        <item>Assistance</item>
-        <item>Order</item>
-    </string-array>
     <string name="title_activity_account">Account</string>
     <string name="title_activity_queue">Queue</string>
     <string name="title_activity_manage_service">ManageService</string>

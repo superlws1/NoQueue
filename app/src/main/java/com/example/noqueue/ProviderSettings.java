@@ -1,5 +1,6 @@
 package com.example.noqueue;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,22 +27,18 @@ import java.util.ArrayList;
  */
 public class ProviderSettings extends AppCompatActivity {
 
-    Button cancelBtn;
     Button loadBtn;
     Button saveBtn;
+    Button backBtn;
     Button addItemBtn;
     Button deleteItemBtn;
-    Button clearBtn;
     Button providerSetupBtn;
 
-    TextView messageView;
     EditText itemTxt;
     EditText priceTxt;
 
     ListView itemList;
     ListView priceList;
-
-    Spinner serviceDropdown;
 
     ArrayList<String> listItem = new ArrayList<String>();
     ArrayList<Double> listPrice = new ArrayList<Double>();
@@ -53,7 +50,6 @@ public class ProviderSettings extends AppCompatActivity {
 
     double latitude;
     double longitude;
-    int type = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +58,13 @@ public class ProviderSettings extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        cancelBtn = findViewById(R.id.cancelBtn);
         loadBtn = findViewById(R.id.loadBtn);
         saveBtn = findViewById(R.id.saveBtn);
+        backBtn = findViewById(R.id.backBtn);
         addItemBtn = findViewById(R.id.addItemBtn);
         deleteItemBtn = findViewById(R.id.deleteItemBtn);
-        clearBtn = findViewById(R.id.clearBtn);
         providerSetupBtn = findViewById(R.id.providerSetupBtn);
 
-        messageView = findViewById(R.id.messageView);
         itemTxt = findViewById(R.id.itemTxt);
         priceTxt = findViewById(R.id.priceTxt);
 
@@ -103,82 +97,16 @@ public class ProviderSettings extends AppCompatActivity {
             }
         });
 
-//        Creates the dropdown for service provider to setup their service (Order/Assistance)
-        serviceDropdown = findViewById(R.id.serviceDropdown);
-        ArrayAdapter<CharSequence> serviceList =
-                ArrayAdapter.createFromResource(this, R.array.service_type,android.R.layout.simple_spinner_item);
-
-        serviceList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        serviceDropdown.setAdapter(serviceList);
-        serviceDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        type = 0;
-                        saveBtn.setVisibility(View.INVISIBLE);
-                        addItemBtn.setVisibility(View.INVISIBLE);
-                        deleteItemBtn.setVisibility(View.INVISIBLE);
-                        clearBtn.setVisibility(View.INVISIBLE);
-                        itemTxt.setVisibility(View.INVISIBLE);
-                        priceTxt.setVisibility(View.INVISIBLE);
-                        itemList.setVisibility(View.INVISIBLE);
-                        priceList.setVisibility(View.INVISIBLE);
-
-                        listItem.clear();
-                        listPrice.clear();
-                        adapterItem = new ArrayAdapter<String>(ProviderSettings.this, android.R.layout.simple_list_item_1, listItem);
-                        itemList.setAdapter(adapterItem);
-                        adapterPrice = new ArrayAdapter<Double>(ProviderSettings.this, android.R.layout.simple_list_item_1, listPrice);
-                        priceList.setAdapter(adapterPrice);
-                        itemTxt.getText().clear();
-                        priceTxt.getText().clear();
-
-                        break;
-
-                    case 1:
-                        type = 1;
-                        saveBtn.setVisibility(View.VISIBLE);
-                        addItemBtn.setVisibility(View.VISIBLE);
-                        deleteItemBtn.setVisibility(View.VISIBLE);
-                        clearBtn.setVisibility(View.VISIBLE);
-                        itemTxt.setVisibility(View.VISIBLE);
-                        priceTxt.setVisibility(View.VISIBLE);
-                        itemList.setVisibility(View.VISIBLE);
-                        priceList.setVisibility(View.VISIBLE);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         adapterItem = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItem);
         itemList.setAdapter(adapterItem);
         adapterPrice = new ArrayAdapter<Double>(this, android.R.layout.simple_list_item_1, listPrice);
         priceList.setAdapter(adapterPrice);
 
-        cancelBtn.setOnClickListener(v -> {
-            finish();
-        });
-
 //        Loads the configuration stored in the database
         loadBtn.setOnClickListener(v -> {
-            if (service.getType() == 0)
-                serviceDropdown.setSelection(0);
-            else if (service.getType() == 1) {
-                serviceDropdown.setSelection(1);
-
                 saveBtn.setVisibility(View.VISIBLE);
                 addItemBtn.setVisibility(View.VISIBLE);
                 deleteItemBtn.setVisibility(View.VISIBLE);
-                clearBtn.setVisibility(View.VISIBLE);
                 itemTxt.setVisibility(View.VISIBLE);
                 priceTxt.setVisibility(View.VISIBLE);
                 itemList.setVisibility(View.VISIBLE);
@@ -191,12 +119,14 @@ public class ProviderSettings extends AppCompatActivity {
                 itemList.setAdapter(adapterItem);
                 adapterPrice = new ArrayAdapter<Double>(this, android.R.layout.simple_list_item_1, listPrice);
                 priceList.setAdapter(adapterPrice);
-            }
-
         });
 
         saveBtn.setOnClickListener(v -> {
-            service.saveItems(listItem,listPrice,1);
+            service.saveItems(listItem,listPrice);
+        });
+
+        backBtn.setOnClickListener(v -> {
+            finish();
         });
 
 //        Adds the items into the list of available items
@@ -227,17 +157,10 @@ public class ProviderSettings extends AppCompatActivity {
             service.setPrice(listPrice);
         });
 
-//        Clear the input text
-        clearBtn.setOnClickListener(v -> {
-            itemTxt.getText().clear();
-            priceTxt.getText().clear();
-        });
-
 //        Opens the service at current location
         providerSetupBtn.setOnClickListener(v -> {
             service.setLatitude(latitude);
             service.setLongitude(longitude);
-            service.setType(type);
             service.setUpService();
 
             setResult(5);

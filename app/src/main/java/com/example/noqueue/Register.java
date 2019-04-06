@@ -18,6 +18,7 @@ public class Register extends AppCompatActivity {
 
     Button backBtn;
     Button registerBtn;
+    Button providerRegisterBtn;
     EditText nameTxt;
     EditText emailTxt;
     EditText passTxt;
@@ -35,6 +36,7 @@ public class Register extends AppCompatActivity {
 
         backBtn = findViewById(R.id.backHome);
         registerBtn = findViewById(R.id.registerBtn);
+        providerRegisterBtn = findViewById(R.id.providerRegisterBtn);
         nameTxt = findViewById(R.id.nameTxt);
         emailTxt = findViewById(R.id.emailTxt);
         passTxt = findViewById(R.id.passTxt);
@@ -52,17 +54,25 @@ public class Register extends AppCompatActivity {
                     emailTxt.getText().toString(),
                     passTxt.getText().toString());
 
-            registerUser(user);
+            registerUser(user, false);
 
+        });
+
+        providerRegisterBtn.setOnClickListener(v -> {
+            User user = new User(nameTxt.getText().toString(),
+                    emailTxt.getText().toString(),
+                    passTxt.getText().toString());
+
+            registerUser(user, true);
         });
 
     }
 
-    public void registerUser(User user) {
+    public void registerUser(User user, boolean provider) {
         firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        user.addNewUser(user);
+                        user.addNewUser(user, provider);
                         startActivity(registerIntent);
                     }
                     else

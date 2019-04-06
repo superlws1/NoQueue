@@ -131,7 +131,7 @@ public class Queue extends AppCompatActivity {
                             if (diffReceipt.size() != 0) {
                                 for (int i = diffReceipt.size() - 1; i >= 0; i --){
                                     String serviceName = keyToService.get(diffReceipt.get(i));
-                                    itemArray.add(0,serviceName.concat(" Collect your order now. CLICK ME TO REMOVE"));
+                                    itemArray.add(0,"ID: ".concat(diffReceipt.get(i)).concat(" Collect at ").concat(serviceName).concat(" Click to remove"));
                                     callNotification(serviceName);
                                 }
                             }
